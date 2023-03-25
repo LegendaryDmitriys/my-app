@@ -1,5 +1,5 @@
 .wrapper-1 {
-    max-width: 1790px;
+    max-width: 1715px;
     margin: 0 auto;
     color:#fff;
 }
@@ -8,19 +8,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 205px;
+    margin-bottom: 100px;
 
     img {
         width: 336px;
     }
     
 
-    div {
-        margin-right: 95px;
-    }
-    div:last-child {
-        margin-right: 0;
-    }
 }
 
 .content-video:last-child {

@@ -1,6 +1,4 @@
 import React from "react";
-import NavBar from "./navbar";
-
 import './scss/archive.scss';
 
 function Archive (){
@@ -9,34 +7,34 @@ function Archive (){
         <section>
             <div className="wrapper-archive">
                 <div className="content_archive_img">
-                    <img src="./assets/archive.jpg" alt="" />
-                    <img src="./assets/archive2.jpg" alt="" />
-                    <img src="./assets/archive3.jpg" alt="" />
+                    <img src="https://im.wampi.ru/2023/03/25/archive.jpg" alt="" />
+                    <img src="https://ic.wampi.ru/2023/03/25/archive2.jpg" alt="" />
+                    <img src="https://ie.wampi.ru/2023/03/25/archive3.jpg" alt="" />
                 </div>
                 <div className="content_archive_img">
-                    <img src="./assets/archive4.jpg" alt="" />
-                    <img src="./assets/archive5.jpg" alt="" />
-                    <img src="./assets/archive6.jpg" alt="" />
+                    <img src="https://im.wampi.ru/2023/03/25/archive4.jpg" alt="" />
+                    <img src="https://ic.wampi.ru/2023/03/25/archive5.jpg" alt="" />
+                    <img src="https://ie.wampi.ru/2023/03/25/archive6.jpg" alt="" />
                 </div>
                 <div className="content_archive_img">
-                    <img src="./assets/archive7.jpg" alt="" />
-                    <img src="./assets/archive8.jpg" alt="" />
-                    <img src="./assets/archive9.jpg" alt="" />
+                    <img src="https://im.wampi.ru/2023/03/25/archive7.jpg" alt="" />
+                    <img src="https://ic.wampi.ru/2023/03/25/archive8.jpg" alt="" />
+                    <img src="https://ie.wampi.ru/2023/03/25/archive9.jpg" alt="" />
                 </div>
                 <div className="content_archive_img">
-                    <img src="./assets/archive10.jpg" alt="" />
-                    <img src="./assets/archive11.jpg" alt="" />
-                    <img src="./assets/archive12.jpg" alt="" />
+                    <img src="https://im.wampi.ru/2023/03/25/archive10.jpg" alt="" />
+                    <img src="https://ic.wampi.ru/2023/03/25/archive11.jpg" alt="" />
+                    <img src="https://ie.wampi.ru/2023/03/25/archive12.jpg" alt="" />
                 </div>
                 <div className="content_archive_img">
-                    <img src="./assets/archive13.jpg" alt="" />
-                    <img src="./assets/archive14.jpg" alt="" />
-                    <img src="./assets/archive15.jpg" alt="" />
+                    <img src="https://im.wampi.ru/2023/03/25/archive13.jpg" alt="" />
+                    <img src="https://ic.wampi.ru/2023/03/25/archive14.jpg" alt="" />
+                    <img src="https://ie.wampi.ru/2023/03/25/archive15.jpg" alt="" />
                 </div>
                 <div className="content_archive_img">
-                    <img src="./assets/archive16.jpg" alt="" />
-                    <img src="./assets/archive17.jpg" alt="" />
-                    <img src="./assets/archive18.jpg" alt="" />
+                    <img src="https://im.wampi.ru/2023/03/25/archive16.jpg" alt="" />
+                    <img src="https://ic.wampi.ru/2023/03/25/archive17.jpg" alt="" />
+                    <img src="https://ie.wampi.ru/2023/03/25/archive18.jpg" alt="" />
                 </div>
             </div>
         </section>

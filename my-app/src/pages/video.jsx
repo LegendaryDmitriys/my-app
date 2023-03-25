@@ -2,6 +2,8 @@ import React from "react";
 import NavBar from "./navbar";
 import './scss/video.scss';
 
+import YoutubeVideo from './modules/YoutubeVideo';
+
 
 function Video (){
     return(
@@ -10,38 +12,38 @@ function Video (){
                 <div className="wrapper-1">
                     <div className="content-video">
                         <div>
-                            <img src="./assets/video.jpg" alt="" />
-                            <p>santiz - mon ami (slowed - reverb)</p>
+                        <YoutubeVideo embedId = "ZKrsXE-D6fg"/>
+                        <p>Santiz - mon ami (slowed - reverb)</p>
                         </div>
                         <div>
-                            <img src="./assets/video2.jpg" alt="" />
-                            <p>santiz Я не понимал (slowed - reverb)</p>
+                            <YoutubeVideo embedId = "4w4oQYQCoVQ"/>
+                            <p>Santiz Я не понимал (slowed - reverb)</p>
                         </div>
                         <div>
-                            <img src="./assets/video3.jpg" alt="" />
+                            <YoutubeVideo embedId = "dPDqASjipHw"/>
                             <p>Santiz - Моей семье "REMIX"</p>
                         </div>
                         <div>
-                            <img src="./assets/video4.jpg" alt="" />
-                            <p>santiz - @ulukmanapo @santizofficial</p>
+                            <YoutubeVideo embedId = "V8E03OeM_cU"/>
+                            <p>Santiz - @ulukmanapo @santizofficial</p>
                         </div>
                     </div>
                     <div className="content-video">
                         <div>
-                            <img src="./assets/video5.jpg" alt="" />
-                            <p>santiz ft Kamilov</p>
+                            <YoutubeVideo embedId = "1gVwQbRdnzU"/>
+                            <p>Santiz ft Kamilov</p>
                         </div>
                         <div>
-                            <img src="./assets/video6.jpg" alt="" />
-                            <p>santiz ft emil</p>
+                            <YoutubeVideo embedId = "LZpOA03sz1o"/>
+                            <p>Santiz ft emil</p>
                         </div>
                         <div>
-                            <img src="./assets/video7.jpg" alt="" />
+                            <YoutubeVideo embedId = "D-iUr68I3z8"/>
                             <p>Santiz 2014 LİVE</p>
                         </div>
                         <div>
-                            <img src="./assets/video8.jpg" alt="" />
-                            <p>santiz Жизнь</p>
+                            <YoutubeVideo embedId = "rvi0seESe2M"/>
+                            <p>Santiz Жизнь</p>
                         </div>
                     </div>
 

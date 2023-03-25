@@ -1,65 +1,81 @@
-import React from "react";
-import NavBar from "./navbar";
+import React, { useState, useEffect } from "react";
+import "./scss/about_product.scss";
+import { Link } from "react-router-dom";
+import jwt_decode from 'jwt-decode';
 
-import './scss/about_product.scss';
+function About_Product(props) {
+  const { item } = props;
+  const [selectedSize, setSelectedSize] = useState(item.size.split(",")[0]);
+  
+  const addToCart = () => {
+    const token = localStorage.getItem("loginToken");
+    if (token) {
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.data.user_id;
+      fetch("http://192.168.0.104/auth-api/product.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          product: item.id,
+          size: selectedSize,
+          userId: userId
+        })
+      })
+      .then(response => response.json())
+      .catch(error => console.error(error))
+    } else {
+      console.log("User not authenticated.");
+    }
+  }
+  
 
-
-
-
-function About_product () {
-    return (
-        <div>
-            <section>
-                <div className="wrapper__product">
-                    <div class="left-column">
-                        <img data-image="black" src="images/black.png" alt=""/>
-                        <img data-image="blue" src="images/blue.png" alt=""/>
-                        <img data-image="red" class="active" src="./assets/merch.png" alt="" />
-                    </div>
-                    <div class="right-column">
-                        <div class="product-description">
-                            <span>Headphones</span>
-                            <h1>Beats EP</h1>
-                            <p>The preferred choice of a vast range of acclaimed DJs. Punchy, bass-focused sound and high isolation. Sturdy headband and on-ear cushions suitable for live performance</p>
-                        </div>
-
-                        <div class="product-configuration">
-                            <div class="product-color">
-                                <span>Color</span>
-                                <div class="color-choose">
-                                <div>
-                                    <input data-image="red" type="radio" id="red" name="color" value="red" checked />
-                                    <label for="red"><span></span></label>
-                                </div>
-                                <div>
-                                    <input data-image="blue" type="radio" id="blue" name="color" value="blue" />
-                                    <label for="blue"><span></span></label>
-                                </div>
-                                <div>
-                                    <input data-image="black" type="radio" id="black" name="color" value="black" />
-                                    <label for="black"><span></span></label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cable-config">
-                            <span>Cable configuration</span>
-                            <div class="cable-choose">
-                                <button>Straight</button>
-                                <button>Coiled</button>
-                                <button>Long-coiled</button>
-                            </div>
-                            <a href="#">How to configurate your headphones</a>
-                        </div>
-                        <div class="product-price">
-                            <span>148$</span>
-                            <a href="#" class="cart-btn">Add to cart</a>
-                        </div>
-                    </div>
+  return (
+    <div className="product">
+    <div className="product__wrapper">
+      <div className="product__half product__half_title">
+        <h2 className="product__title">{item.type} {item.name}</h2>
+      </div>
+      <div className="product__half product__half_gallery">
+        <img src={item.image_url} alt="" />
+      </div>
+      <div className="product__half product__half_description">
+        <div className="productAbout">
+          <h3 className="product__price">{item.price}<span>₽</span></h3>
+          <div className="productSelectSize">
+            <div className="productSelectSize__label">Размер RU</div>
+            <div className="SizeSelect">
+              {item.size && item.size.split(",").map((size) => (
+                <div className={`SizeSelect__size ${
+                  selectedSize === size ? "selected" : ""
+                }`}
+                onClick={() => setSelectedSize(size)}
+              >
+                  <span>{size}</span>
                 </div>
-              </div>  
-            </section>
+              ))}
+            </div>
+            <div className="productAbout__addToCart">
+              <button onClick={addToCart}>Перейти в корзину</button>
+            </div>
+            <div className="productAbout_info">
+
+            </div>
+            <div className="productDesc">
+              <div className="productDesc__label">
+                <h4>Описание</h4>
+              </div>
+              <div className="productDesc__text">
+                <p>{item.description}</p>
+              </div>
+            </div>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  </div>
+  );
 }
 
-export default About_product;
+export default About_Product;

@@ -1,5 +1,5 @@
 header {
-    margin-bottom: 170px;
+    margin-bottom: 50px;
 }
 
 .wrapper{
@@ -25,5 +25,10 @@ header {
     }
     li:last-child {
         margin-left: 0;
+    }
+
+    a:hover {
+        transition: 0.2s;
+        color: #326CF9;
     }
 }
