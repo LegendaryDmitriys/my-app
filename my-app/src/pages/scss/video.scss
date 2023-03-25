@@ -1,0 +1,28 @@
+.wrapper-1 {
+    max-width: 1790px;
+    margin: 0 auto;
+    color:#fff;
+}
+
+.content-video{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 205px;
+
+    img {
+        width: 336px;
+    }
+    
+
+    div {
+        margin-right: 95px;
+    }
+    div:last-child {
+        margin-right: 0;
+    }
+}
+
+.content-video:last-child {
+    margin-bottom: 0;
+}
