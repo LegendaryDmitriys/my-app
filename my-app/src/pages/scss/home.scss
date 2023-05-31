@@ -1,6 +1,12 @@
   .Header {
 
     
+
+
+    
+
+
+
     header{
       margin-bottom: 0;
     }
@@ -21,6 +27,7 @@
   
     img {
       padding-top: 25px;
+      width: 100%;
     }
   
     header {
@@ -37,23 +44,70 @@
   
   .Homepage{
     overflow: hidden;
-    .content{
 
+
+    .content{
       display: flex;
       flex-wrap: nowrap;
       justify-content: space-between;
+
+      
+
+
+      svg{
+        max-width: 100%;
+      }
+
+
+      @media (max-width: 750px){
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+
+        svg {
+          display: none;
+        }
+      }
+
+      
+        
+      }
+
       .content-left{
         display: flex;
         justify-content: center;
         align-items: flex-start;
         flex-direction: column;
-        padding-left: 60px;
+
+        svg {
+          max-width: 50%;
+        }
+
+        img {
+         
+        }
+        @media (max-width: 750px){
+          img {
+            width: 50vh;
+          }
+        }
       }
       .content-right {
         padding-right: 168px;
+
+
+        @media (max-width: 750px){
+          padding-right:0;
+
+          img {
+            width: 50vh;
+          }
+
+        }
       }
     }
-  }
   
   footer {
       a, p {

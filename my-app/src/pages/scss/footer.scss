@@ -17,7 +17,7 @@ footer .footerinner {
     flex-wrap: wrap;
 }
 
-footer .footerinner .header {
+footer .footerinner .header-section {
     font-weight: 600;
 }
 
@@ -27,8 +27,12 @@ footer .footerinner .header {
     flex: 0 0 500px;
 }
 
-footer .footerinner .header a {
+footer .footerinner .header-section a {
     font-size: 21px;
+}
+
+.link {
+    cursor: pointer;
 }
 
 footer .footerinner ul {

@@ -7,12 +7,7 @@ import Tour from './pages/tour';
 import Video from './pages/video';
 import Archive from './pages/archive';
 import Merch from './pages/merch';
-import About_Product from './pages/about_product';
-import Auth from './pages/modules/login';
-import Policy from './pages/policy';
-import Card from './pages/card';
 import Setting from './pages/setting';
-import Footer from './pages/footer';
 import Registration from './pages/modules/registration';
 import Login from './pages/modules/login';
 import HistoryBasket from './pages/history_basket';
@@ -21,6 +16,7 @@ import ConcertTicket from "./pages/buyTicets"
 import {UserContext} from './context/UserContext';
 import {useContext} from 'react'
 import Basket from './pages/card';
+import NotFoundPage from './pages/notfoundpage';
 
 function App() {
   
@@ -52,9 +48,10 @@ function App() {
           <Route path='/about' element={<About />} />
           <Route path='/albums' element={<Albums />} />
           <Route path='/archive' element={<Archive />} />
+          <Route path="/tour/:id" element={<ConcertTicket />} />
+          <Route path="/404" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to={user ? '/dash':'/login'} />} />
         </Routes>
-        <Footer />
       </BrowserRouter>
     </div>
   );

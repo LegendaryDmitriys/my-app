@@ -5,32 +5,34 @@ import { UserContext } from "../../context/UserContext";
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-const User_Panel = () =>{
-    const {user, logout} = useContext(UserContext);
+const User_Panel = () => {
+    const { user, logout } = useContext(UserContext);
     const [avatarUrl, setAvatarUrl] = useState('');
     const [userProfiles, setUserProfiles] = useState(() => {
-    const cachedData = localStorage.getItem('userProfiles');
-    return cachedData ? JSON.parse(cachedData) : [];
-});
+      const cachedData = localStorage.getItem('userProfiles');
+      return cachedData ? JSON.parse(cachedData) : [];
+    });
+  
+    useEffect(() => {
+      const token = localStorage.getItem("loginToken");
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.data.user_id;
+  
+      axios.post('http://192.168.0.104/userpanel.php', null, {
+        params: {
+          userId: userId
+        }
+      })
+      .then(response => {
+        setUserProfiles(response.data);
+        localStorage.setItem('userProfiles', JSON.stringify(response.data));
+      })
+      .catch(error => toast.error(error));
+    }, []);
 
-useEffect(() => {
-  const token = localStorage.getItem("loginToken");
-  const decodedToken = jwt_decode(token);
-  const userId = decodedToken.data.user_id;
-
-  axios.post('http://192.168.0.104/userpanel.php', null, {
-      params: {
-        userId: userId
-      }
-    })
-    .then(response => {
-      setUserProfiles(response.data);
-      localStorage.setItem('userProfiles', JSON.stringify(response.data));
-    })
-    .catch(error => console.log(error));
-}, []);
 
     return (
         <div>
@@ -38,7 +40,7 @@ useEffect(() => {
                 <div className="setting-container">
                     {userProfiles.map(userProfile => (
                         <div key={userProfile.id}>
-                          <img className="round" src={userProfile.image_path ? userProfile.image_path : 'https://im.wampi.ru/2023/05/15/default-img.jpg'} alt="user" />
+                          <img className="round" src={userProfile.image_path ? userProfile.image_path : 'http://192.168.0.104/uploads/default-img.png'} alt="user" />
                             <h3>{userProfile.first_name} {userProfile.last_name}</h3>
                         </div>
                         ))}
@@ -59,7 +61,7 @@ useEffect(() => {
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M17.85 36C12.8833 36 8.66667 34.2417 5.2 30.725C1.73333 27.2083 0 22.95 0 17.95H3C3 22.1167 4.43333 25.6667 7.3 28.6C10.1667 31.5333 13.6833 33 17.85 33C22.0833 33 25.6667 31.5167 28.6 28.55C31.5333 25.5833 33 21.9833 33 17.75C33 13.6167 31.5167 10.125 28.55 7.275C25.5833 4.425 22.0167 3 17.85 3C15.5833 3 13.4583 3.51667 11.475 4.55C9.49167 5.58333 7.76667 6.95 6.3 8.65H11.55V11.65H1.1V1.25H4.1V6.55C5.83333 4.51667 7.89167 2.91667 10.275 1.75C12.6583 0.583333 15.1833 0 17.85 0C20.35 0 22.7 0.466667 24.9 1.4C27.1 2.33333 29.025 3.60833 30.675 5.225C32.325 6.84167 33.625 8.73333 34.575 10.9C35.525 13.0667 36 15.4 36 17.9C36 20.4 35.525 22.75 34.575 24.95C33.625 27.15 32.325 29.0667 30.675 30.7C29.025 32.3333 27.1 33.625 24.9 34.575C22.7 35.525 20.35 36 17.85 36ZM24.25 26.15L16.55 18.55V7.85H19.55V17.3L26.4 24L24.25 26.15Z" fill="white"/>
                                 </svg>
-                                <Link to="/HistoryBasket">История</Link>
+                                <Link to="/historybasket">История</Link>
                                 </a>
                             </li>
                             <li>
@@ -67,7 +69,7 @@ useEffect(() => {
                                     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M3 40C2.2 40 1.5 39.7 0.9 39.1C0.3 38.5 0 37.8 0 37V11C0 10.2 0.3 9.5 0.9 8.9C1.5 8.3 2.2 8 3 8H8.5V7.5C8.5 5.4 9.225 3.625 10.675 2.175C12.125 0.725 13.9 0 16 0C18.1 0 19.875 0.725 21.325 2.175C22.775 3.625 23.5 5.4 23.5 7.5V8H29C29.8 8 30.5 8.3 31.1 8.9C31.7 9.5 32 10.2 32 11V37C32 37.8 31.7 38.5 31.1 39.1C30.5 39.7 29.8 40 29 40H3ZM3 37H29V11H23.5V15.5C23.5 15.9333 23.3583 16.2917 23.075 16.575C22.7917 16.8583 22.4333 17 22 17C21.5667 17 21.2083 16.8583 20.925 16.575C20.6417 16.2917 20.5 15.9333 20.5 15.5V11H11.5V15.5C11.5 15.9333 11.3583 16.2917 11.075 16.575C10.7917 16.8583 10.4333 17 10 17C9.56667 17 9.20833 16.8583 8.925 16.575C8.64167 16.2917 8.5 15.9333 8.5 15.5V11H3V37ZM11.5 8H20.5V7.5C20.5 6.23333 20.0667 5.16667 19.2 4.3C18.3333 3.43333 17.2667 3 16 3C14.7333 3 13.6667 3.43333 12.8 4.3C11.9333 5.16667 11.5 6.23333 11.5 7.5V8Z" fill="white"/>
                                     </svg>
-                                <Link to="/Basket">Корзина</Link>
+                                <Link to="/basket">Корзина</Link>
                                 </a>
                             </li>
                             <li>

@@ -4,6 +4,10 @@ import './scss/card.scss';
 import User_Panel from "./modules/userpanel";
 import jwt_decode from 'jwt-decode';
 
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function Basket () {
 
   const [quantity, setQuantity] = useState({});
@@ -23,46 +27,58 @@ function Basket () {
           const basketData = await basketResponse.json();
           const ordersResponse = await fetch(`http://192.168.0.104/orders.php?user_id=${userId}`);
           const ordersData = await ordersResponse.json();
+  
           
-          const mergedData = basketData.map(item => {
-            const correspondingOrder = ordersData.find(order => order.merch_id === item.id);
-            if (correspondingOrder) {
-              // Извлекаем информацию о товаре из таблицы `merch` на основе `merch_id`
-              const correspondingMerch = basketData.find(merch => merch.id === item.id);
-              if (correspondingMerch) {
-                return {
-                  ...item,
-                  selected_size: correspondingOrder.selected_size,
-                  discounted_price: correspondingMerch.discounted_price,
-                };
-              }
+          const mergedData = basketData.reduce((result, item) => {
+            const correspondingOrders = ordersData.filter(order => order.merch_id === item.id);
+            const correspondingMerch = basketData.find(merch => merch.id === item.id);
+            if (correspondingOrders && correspondingOrders.length > 0 && correspondingMerch) {
+              correspondingOrders.forEach(order => {
+                const existingItem = result.find(
+                  mergedItem => mergedItem.id === `${item.id}_${order.selected_size}`
+                );
+                if (!existingItem) {
+                  result.push({
+                    ...item,
+                    id: `${item.id}_${order.selected_size}`, // Уникальный идентификатор с учетом размера
+                    selected_size: order.selected_size,
+                    discounted_price: correspondingMerch.discounted_price,
+                  });
+                }
+              });
+            } else {
+              result.push(item);
             }
-            return item;
-          });
+            return result;
+          }, []);
           
-          setMergedData(mergedData);
-
-          const initialQuantity = mergedData.reduce((acc, item) => {
+          
+          
+          
+          
+  
+          const quantity = mergedData.reduce((acc, item) => {
             acc[item.id] = 1;
             return acc;
           }, {});
-          setQuantity(initialQuantity);
-
-
+          setQuantity(quantity);
+  
           let totalPrice = 0;
-        mergedData.forEach(item => {
-          totalPrice += initialQuantity[item.id] * (item.discounted_price || item.price);
-        });
-        setTotalPrice(totalPrice);
-      }
+          mergedData.forEach(item => {
+            totalPrice += quantity[item.id] * (item.discounted_price || item.price);
+          });
+          setTotalPrice(totalPrice);
+  
+          setMergedData(mergedData);
+        }
       } catch (error) {
-        console.error("Ошибка при извлечении данных: ", error);
+        toast.error("Ошибка при извлечении данных: ", error);
       }
     };
   
     fetchData();
   }, []);
-
+  
  
  
   
@@ -72,35 +88,69 @@ function Basket () {
       if (token) {
         const decodedToken = jwt_decode(token);
         const userId = decodedToken.data.user_id;
-        const response = await fetch(
-          `http://192.168.0.104/deletproduct.php?user_id=${userId}&item_id=${itemId}`
-        );
-        const data = await response.json();
+        const [itemIdWithoutPrefix, selectedSize] = itemId.split("_");
+        const request = {
+          user_id: userId, 
+          item_id: itemIdWithoutPrefix, 
+          selected_size: selectedSize 
+        };
   
-        // Обновляем состояние mergedData без удаленного товара
-        const updatedMergedData = mergedData.filter(item => item.id !== itemId);
-        setMergedData(updatedMergedData);
+        try {
+   
+          const response = await fetch('http://192.168.0.104/deletproduct.php', {
+            method: 'POST', 
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(request)
+          });
   
-        // Удаляем удаленный товар из состояния quantity
-        const updatedQuantity = { ...quantity };
-        delete updatedQuantity[itemId];
-        setQuantity(updatedQuantity);
-  
-        // Вычисляем общую стоимость всех товаров после удаления
-        let totalPrice = 0;
-        updatedMergedData.forEach(item => {
-          totalPrice += updatedQuantity[item.id] * (item.discounted_price || item.price);
-        });
-        setTotalPrice(totalPrice);
+          const updatedMergedData = mergedData.filter(
+            item => item.id !== itemId || item.selected_size !== selectedSize
+          );
+
+          setMergedData(updatedMergedData);
+
+          console.log(mergedData);
+          console.log(updatedMergedData);
+
+          const updatedQuantity = { ...quantity };
+          delete updatedQuantity[itemId];
+          setQuantity(updatedQuantity);
+
+          let totalPrice = 0;
+          updatedMergedData.forEach(item => {
+            totalPrice += updatedQuantity[item.id] * (item.discounted_price || item.price);
+          });
+          setTotalPrice(totalPrice);
+        
+          const data =  response.json();
+          // Проверяем статус ответа
+          if (response.ok) {
+            // Успешное удаление
+            toast.success(data.message);
+            // Добавьте здесь код обновления состояния компонента после успешного удаления
+            
+          } else {
+            // Ошибка при удалении
+            toast.error(data.message);
+          }
+        } catch (error) {
+          console.error('Ошибка при выполнении запроса:');
+        }
       }
     } catch (error) {
-      console.error("Ошибка при удалении товара: ", error);
+      console.error('Ошибка при получении токена:', error);
     }
   };
   
   
+        
   
-  const handleQuantityChange = (change, id, price) => {
+  
+  
+  const handleQuantityChange = (change, id) => {
     const newQuantity = { ...quantity };
     newQuantity[id] = (newQuantity[id] || 0) + change;
   
@@ -110,16 +160,74 @@ function Basket () {
   
     setQuantity(newQuantity);
   
-    // Вычисляем общую стоимость всех товаров
     let totalPrice = 0;
-    mergedData.forEach(item => {
-      totalPrice += newQuantity[item.id] * (item.discounted_price || item.price);
+    const updatedMergedData = mergedData.map(item => {
+      if (item.id === id) {
+        item.quantity = newQuantity[id];
+      }
+      totalPrice += item.quantity * (item.discounted_price || item.price);
+      return item;
     });
   
+    if (!mergedData.some(item => item.id === id)) {
+      // Добавить новый элемент в mergedData, если он не существует
+      updatedMergedData.push({
+        ...mergedData.find(item => item.id === id),
+        quantity: newQuantity[id],
+      });
+    }
+  
+    setMergedData(updatedMergedData);
     setTotalPrice(totalPrice);
+  }; 
+  
+  
+  
+  const handleCheckout = async () => {
+    try {
+      const token = localStorage.getItem("loginToken");
+      if (token) {
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.data.user_id;
+  
+        const itemIds = mergedData.map(item => item.id.split("_")[0]);
+        const itemSizes = mergedData.map(item => item.selected_size);
+        const itemQuantities = mergedData.map(item => (quantity[item.id] > 0 ? quantity[item.id] : 1));
+        const itemPrices = mergedData.map(item => item.discounted_price || item.price);
+  
+        const requestBody = {
+          user_id: userId,
+          item_ids: itemIds,
+          item_sizes: itemSizes,
+          item_quantities: itemQuantities,
+          item_prices: itemPrices.map((price, index) => price * itemQuantities[index]), // Умножение цены на количество
+        };
+  
+        const response = await fetch("http://192.168.0.104/successful_orders.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
+  
+        if (response.ok) {
+          // Товар успешно добавлен в таблицу успешных заказов
+          toast.success("Товар успешно добавлен в таблицу успешных заказов");
+       
+          // Используйте индивидуальные цены здесь или выполните другие действия после успешного оформления заказа
+          mergedData.forEach((item, index) => {
+            console.log(`Цена для товара ${item.id}: ${itemPrices[index] * itemQuantities[index]}`);
+          });
+        } else {
+          // Произошла ошибка при добавлении товара в таблицу успешных заказов
+          toast.error("Ошибка при добавлении товара в таблицу успешных заказов");
+        }
+      }
+    } catch (error) {
+      toast.error("Ошибка при отправке запроса на сервер: ", error);
+    }
   };
-  
-  
   
   
     return(
@@ -127,6 +235,7 @@ function Basket () {
         <div className="card__wrapper">
           <User_Panel/>
           <div className="card">
+            <ToastContainer />
             <div className="card__header">
             <div className="cart-header__type">Товар</div>
               <div className="cart-header__title">Наименование</div>
@@ -166,7 +275,7 @@ function Basket () {
               <div className="basket_total">
                 <h2>Общий итог: {totalPrice} <span>₽</span></h2>
               </div>
-              <button>Перейти к оплате</button>
+              <button onClick={() => handleCheckout()}>Перейти к оплате</button>
             </div>
           </div>
         </div>

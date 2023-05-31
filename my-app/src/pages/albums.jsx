@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, } from "react";
 import "./scss/albums.scss";
+import Footer from "./footer";
+
 
 function Albums() {
   const [albums, setAlbums] = useState([]);
@@ -10,6 +12,8 @@ function Albums() {
   const [audio, setAudio] = useState(null);
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef(null);
+
+  
 
   useEffect(() => {
     getAllAlbums();
@@ -27,6 +31,15 @@ function Albums() {
     setCurrentTracks(jsonData);
     setShowModal(true);
 
+  };
+
+
+  const getAlbumImageUrl = (albumId) => {
+    const album = albums.find((album) => album.id === albumId);
+    if (album) {
+      return album.image_url;
+    }
+    return ""; // Возвращаем пустую строку, если изображение альбома не найдено
   };
 
   const TrackClick = (trackUrl,trackId) => {
@@ -78,6 +91,7 @@ const VolumeChange = (event) => {
   }
 };
 
+
   return (
     <div>
       <section>
@@ -121,7 +135,8 @@ const VolumeChange = (event) => {
         <div key={track.id} className="track">
           <div className={`item${track.id === activeTrackId ? ' active' : ''}`}  style={{ backgroundColor: track.id === activeTrackId ? '#326CF9' : '#000' }}> 
             <article className="title">
-              <img src="https://avatars.yandex.net/get-music-user-playlist/71140/454476036.1186.81850/m1000x1000?1553533935813&webp=false" alt="" />
+            <div className="album-item">
+              <img src={getAlbumImageUrl(track.album_id)} alt="" />
               <span onClick={() => TrackClick(track.track_url, track.id)}>
                 {track.id === activeTrackId ? 
                   <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 96 960 960" width="40"><path d="M525 856V296h235v560H525Zm-325 0V296h235v560H200Zm385-60h115V356H585v440Zm-325 0h115V356H260v440Z"/></svg> 
@@ -129,6 +144,7 @@ const VolumeChange = (event) => {
                   <svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 96 960 960" width="40"><path d="M320 853V293l440 280-440 280Zm60-280Zm0 171 269-171-269-171v342Z"/></svg>
                 }
               </span>
+              </div>
               <p>{track.name}</p>
             </article>
           </div>
@@ -137,6 +153,7 @@ const VolumeChange = (event) => {
           </div>
         </div>
       )}
+      <Footer/>
     </div>
   );
 }

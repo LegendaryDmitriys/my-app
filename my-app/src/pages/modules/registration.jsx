@@ -2,13 +2,12 @@ import React, { useContext, useState } from "react";
 import "../scss/autch.scss";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Registration() {
   const {registerUser, wait} = useContext(UserContext);
-  const [errMsg, setErrMsg] = useState(false);
-  const [successMsg, setSuccessMsg] = useState(false);
   const [formData, setFormData] = useState({
       name:'',
       email:'',
@@ -26,25 +25,23 @@ function Registration() {
       e.preventDefault();
 
       if(!Object.values(formData).every(val => val.trim() !== '')){
-          setSuccessMsg(false);
-          setErrMsg('Please Fill in all Required Fields!');
+          toast.warn('Пожалуйста, заполните все обязательные поля!');
           return;
       }
 
       const data = await registerUser(formData);
       if(data.success){
           e.target.reset();
-          setSuccessMsg('You have successfully registered.');
-          setErrMsg(false);
+          toast.success('Вы успешно зарегестрировались');
       }
       else if(!data.success && data.message){
-          setSuccessMsg(false);
-          setErrMsg(data.message);
+          toast.error(data.message);
       }
       
   }
     return (
     <div className="form">
+      <ToastContainer />
       <div className="form-panel one active">
         <div className="form-header">
           <h1>Регистрация</h1>
@@ -69,8 +66,6 @@ function Registration() {
               <input type="email" name="email" onChange={onChangeInput} id="email" value={formData.email} required />
             </div>
             <div className="form-group">
-            {successMsg && <div className="success-msg">{successMsg}</div>}
-            {errMsg && <div className="err-msg">{errMsg}</div>}
               <button type="submit"disabled={wait}>Зарегистрироваться</button>
             </div>
           </form>

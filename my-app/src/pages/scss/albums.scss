@@ -1,5 +1,4 @@
 
-
 .wrapper{
     max-width: 1715px;
     margin: 29px  auto ;
@@ -15,15 +14,11 @@
     }
     li{
         display: inline;
-        margin-right: 48px;
         font-family: 'Roboto';
         font-style: normal;
         font-weight: 900;
         font-size: 20px;
         line-height: 23px;
-    }
-    li:last-child {
-        margin-left: 0;
     }
     
 }
@@ -46,6 +41,7 @@
 
     img {
         margin-bottom: 45px;
+        max-width: 100%;
     }
     
     p {
@@ -189,6 +185,9 @@
 
                 svg{
                     width: 40px;
+                    position: absolute;
+                    right: 20px;
+                    bottom: 50%;
                 }
 
             }
@@ -209,3 +208,50 @@
       }
   }
   
+
+  @media screen and (max-width: 768px) {
+    .wrapper{ 
+        max-width: 1200px;
+        margin: 29px auto;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .Cards-content{
+        .content-left{
+            margin-right:0px;
+
+            p {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 900;
+            font-size: 15px;
+            line-height: 28px;
+            }
+        }
+        .content-right{
+            p{
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 900;
+            font-size: 15px;
+            line-height: auto;
+        }
+    }
+    }
+  }
+.album-item {
+    position: relative;
+
+
+    img {
+        position: relative;
+        z-index: 1;
+    }
+
+
+    span {
+        position: relative;
+        z-index: 2;
+    }
+}

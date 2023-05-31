@@ -124,7 +124,7 @@ function Merch() {
                   <a href="#" className="card__title">
                     {merch.type} {merch.name}
                   </a>
-                  <button className="card__add">В корзину</button>
+                  <button className="card__add">Подробнее</button>
                 </div>
               </div>
             ))}

@@ -1,5 +1,6 @@
 import React from "react";
 import './scss/archive.scss';
+import Footer from "./footer";
 
 function Archive (){
     return (
@@ -38,8 +39,11 @@ function Archive (){
                 </div>
             </div>
         </section>
+        <Footer/>
     </div>
     )
 }
 
 export default Archive;
+
+

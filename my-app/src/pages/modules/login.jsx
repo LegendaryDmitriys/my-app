@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { UserContext } from "../../context/UserContext";
 import PasswordReset from "./passwordreset";
 import "../scss/autch.scss";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Login() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -38,21 +41,23 @@ const submitForm = async (e) => {
     e.preventDefault();
 
     if(!Object.values(formData).every(val => val.trim() !== '')){
-        setErrMsg('Please Fill in all Required Fields!');
+        toast.error('Заполните все поля!');
         return;
     }
 
     const data = await loginUser(formData);
     if(data.success){
+        toast.success('Успешный вход!');
         e.target.reset();
         setRedirect('/userpanel');
         await loggedInCheck();
-        return;
+
     }
-    setErrMsg(data.message);
+    toast.error(data.message);
 }
   return (
   <div className="form">
+    <ToastContainer />
     <div className="form-panel one active">
       <div className="form-header">
         <h1>Вход</h1>
@@ -78,7 +83,6 @@ const submitForm = async (e) => {
               </a>
           </div>
           <div className="form-group">
-          {errMsg && <div className="err-msg">{errMsg}</div>}
           {redirect ? <Link to={redirect}>{}</Link> :<button type="submit" disabled={wait}>Войти</button>}
           </div>
         </form>

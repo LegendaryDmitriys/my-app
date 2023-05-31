@@ -3,17 +3,27 @@ import './scss/setting.scss';
 import axios from 'axios'
 import User_Panel from "./modules/userpanel";
 import jwt_decode from 'jwt-decode';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 function Setting() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileUrl, setFileUrl] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
+    const defaultImageUrl = "https://ie.wampi.ru/2023/05/30/default-img.jpg";
+    
+    const [userData, setUserData] = useState({
+      firstName: "",
+      lastName: ""
+    });
+    
 
     const handleConfirmNewPasswordChange = (event) => {
       setConfirmNewPassword(event.target.value);
@@ -31,7 +41,7 @@ function Setting() {
     const handlePasswordChangeSubmit = async (event) => {
       event.preventDefault();
       if (newPassword !== confirmNewPassword) {
-        setErrorMessage("Новые пароли не совпадают");
+        toast.error("Новые пароли не совпадают");
         return;
       }
       const token = localStorage.getItem("loginToken");
@@ -43,13 +53,12 @@ function Setting() {
           oldPassword: oldPassword,
           newPassword: newPassword,
         });
-        setErrorMessage("");
         setOldPassword("");
         setNewPassword("");
         setConfirmNewPassword("");
-        alert("Пароль успешно изменен");
+        toast.success("Пароль успешно изменен");
       } catch (error) {
-        setErrorMessage("Ошибка изменения пароля");
+        toast.error("Ошибка изменения пароля");
       }
     };
     
@@ -66,7 +75,7 @@ function Setting() {
     const handlePersonalDataSubmit = async (event) => {
       event.preventDefault();
       if (!firstName || !lastName) {
-        setErrorMessage("Введите имя и фамилию");
+        toast.error("Введите имя и фамилию");
         return;
       }
       const token = localStorage.getItem("loginToken");
@@ -78,12 +87,13 @@ function Setting() {
           firstName: firstName,
           lastName: lastName,
         });
-        setErrorMessage("");
         // обновляем переменные состояния в React для отображения новых данных
         setFirstName(firstName);
         setLastName(lastName);
+        setUserData({ firstName: firstName, lastName: lastName });
+        toast.success("Данные успешно обновленны")
       } catch (error) {
-        setErrorMessage("Ошибка сохранения данных");
+        toast.error("Ошибка сохранения данных");
       }
     };
 
@@ -96,7 +106,7 @@ function Setting() {
     const handleSubmit = async (event) => {
       event.preventDefault();
       if (!selectedFile) {
-        setErrorMessage("Выберите файл");
+        toast.error("Выберите файл");
         return;
       }
       const formData = new FormData();
@@ -108,7 +118,6 @@ function Setting() {
           },
         });
         setFileUrl(response.data.fileUrl);
-        setErrorMessage("");
         // отправляем запрос на сервер с url картинки, чтобы сохранить ее в базе данных
         const token = localStorage.getItem("loginToken");
           const decodedToken = jwt_decode(token);
@@ -117,25 +126,31 @@ function Setting() {
           userId: userId,
           avatarUrl: response.data.fileUrl,
         });
+
+        toast.success("Аватар успешно загружен")
         
       } catch (error) {
-        setErrorMessage("Ошибка загрузки файла");
+        toast.error("Ошибка загрузки файла");
       }
     };
   
     return(
     <div>
         <div className="setting__wrapper">
-            <User_Panel/>
+            <User_Panel user1={userData}/>
             <div className="setting__profile">
+              <ToastContainer />
                 <div className="setting__avatar">
                     <h3>Аватар</h3>
-                    {fileUrl && <img src={fileUrl} alt="avatar" />}
+                    {fileUrl ? (
+                        <img src={fileUrl} alt="avatar" />
+                      ) : (
+                        <img src={defaultImageUrl} alt="default avatar" />
+                      )}
                     <form onSubmit={handleSubmit}>
                     <div>
                         <input type="file" onChange={handleFileChange} />
                     </div>
-                    {errorMessage && <div>{errorMessage}</div>}
                     <button type="submit">Загрузить</button>
                     </form>
                     </div>
@@ -154,7 +169,6 @@ function Setting() {
                       <p>Повторите новый пароль</p>
                       <input type="password" placeholder="" value={confirmNewPassword} onChange={handleConfirmNewPasswordChange} required />
                     </div>
-                    {errorMessage && <div>{errorMessage}</div>}
                     <button type="submit">Сохранить</button>
                   </form>
                 </div>
@@ -169,7 +183,6 @@ function Setting() {
                       <p>Введите фамилию</p>
                       <input type="text" placeholder="" value={lastName} onChange={handleLastNameChange} required/>
                     </div>
-                    {errorMessage && <div>{errorMessage}</div>}
                     <button type="submit">Cохранить</button>
                   </form>
                 </div>

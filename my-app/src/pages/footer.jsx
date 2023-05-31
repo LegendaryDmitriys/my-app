@@ -31,12 +31,12 @@ function Footer() {
 			<div className="footerinner wrapper text-light">
 				<div className="column-section ">
 					<div className="column one-half footer-left">
-						<h6 className="header">
-							<a onClick={MailingClick}>Подпишитесь на рассылку новостей</a>
+						<h6 className="header-section">
+							<a className="link" onClick={MailingClick}>Подпишитесь на рассылку новостей</a>
 						</h6>
 						<ul>
 							<li>
-							<a onClick={handleModalOpen}>Политика конфиденциальности</a>
+							<a className="link" onClick={handleModalOpen}>Политика конфиденциальности</a>
 							</li>
 						</ul>
 					</div>
